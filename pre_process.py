@@ -113,19 +113,19 @@ if __name__ == '__main__':
     img_width, img_height = 320, 320
 
     print('Extracting cars_train.tgz...')
-    if not os.path.exists('data/cars_train'):
-        with tarfile.open('data/cars_train.tgz', "r:gz") as tar:
-            tar.extractall('data')
+    # if not os.path.exists('data/cars_train'):
+    with tarfile.open('data/cars_train.tgz', "r:gz") as tar:
+        tar.extractall('data')
     print('Extracting cars_test.tgz...')
-    if not os.path.exists('data/cars_test'):
-        with tarfile.open('data/cars_test.tgz', "r:gz") as tar:
-            tar.extractall('data')
+    # if not os.path.exists('data/cars_test'):
+    with tarfile.open('data/cars_test.tgz', "r:gz") as tar:
+        tar.extractall('data')
     print('Extracting car_devkit.tgz...')
-    if not os.path.exists('data/devkit'):
-        with tarfile.open('data/car_devkit.tgz', "r:gz") as tar:
-            tar.extractall('data')
+    # if not os.path.exists('data/devkit'):
+    with tarfile.open('data/car_devkit.tgz', "r:gz") as tar:
+        tar.extractall('data')
 
-    cars_meta = scipy.io.loadmat('devkit/cars_meta')
+    cars_meta = scipy.io.loadmat('data/devkit/cars_meta')
     class_names = cars_meta['class_names']  # shape=(1, 196)
     class_names = np.transpose(class_names)
     print('class_names.shape: ' + str(class_names.shape))
