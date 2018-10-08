@@ -19,14 +19,18 @@ def load_data(split):
         num_samples = num_valid
         folder = 'data/valid'
 
-    x = np.empty((num_samples, 320, 320, 3), dtype=np.float32)
-    y = np.empty((num_samples, 320, 320, 3), dtype=np.float32)
+    x = np.empty((num_samples, 3, 320, 320), dtype=np.float32)
+    y = np.empty((num_samples, 3, 320, 320), dtype=np.float32)
 
     files = [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith('.jpg')]
 
     for i, filename in enumerate(files):
         bgr_img = cv.imread(filename)
         rgb_img = cv.cvtColor(bgr_img, cv.COLOR_BGR2RGB)
+        rgb_img = np.transpose(rgb_img, (2, 0, 1))
+        assert rgb_img.shape == (3, 224, 224)
+        assert np.max(rgb_img) <= 255
+
         x[i, :, :, :] = rgb_img / 255.
         y[i, :, :, :] = rgb_img / 255.
 
