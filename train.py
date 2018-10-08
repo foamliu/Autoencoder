@@ -1,16 +1,8 @@
-###############################
-## This document created by Alexandre Boulch, ONERA, France is
-## distributed under GPL license
-###############################
 import time
 
-import numpy as np
 import torch.optim as optim
-from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from tqdm import *
 
-from config import *
 from data_gen import VaeDataset
 from models import SegNet
 from utils import *
@@ -60,35 +52,44 @@ def train(epoch, train_loader, model, optimizer):
                                                                   loss=losses))
 
 
-def valid(model):
-    model.eval()
+def valid(val_loader, model):
+    model.eval()  # eval mode (no dropout or batchnorm)
 
-    # iteration over the batches
-    batches = []
-    for batch_idx, batch_files in enumerate(tqdm(batches)):
-        # containers
-        bs = len(batch_files)
-        batch = np.zeros((bs, input_nbr, imsize, imsize), dtype=float)
-        batch_labels = np.zeros((bs, imsize, imsize), dtype=int)
+    # Loss function
+    # criterion = nn.MSELoss().to(device)
 
-        # fill batches
-        # ...
+    batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
+    losses = ExpoAverageMeter()  # loss (per word decoded)
+    accs = ExpoAverageMeter()  # accuracy
 
-        data_s2 = Variable(torch.Tensor(batch))
-        target = Variable(torch.LongTensor(batch_labels))
+    start = time.time()
 
-        data_s2, target = data_s2.to(device), target.to(device)
+    with torch.no_grad():
+        # Batches
+        for i_batch, (x, y) in enumerate(val_loader):
+            # Set device options
+            x = x.to(device)
+            y = y.to(device)
 
-        batch_th = Variable(torch.Tensor(batch))
-        target_th = Variable(torch.LongTensor(batch_labels))
+            y_hat = model(x)
 
-        batch_th = batch_th.to(device)
-        target_th = target_th.to(device)
+            loss = torch.sqrt((y_hat - y).pow(2).mean())
 
-        # predictions
-        output = model(batch_th)
+            # Keep track of metrics
+            losses.update(loss.item())
+            batch_time.update(time.time() - start)
 
-        # ...
+            start = time.time()
+
+            # Print status
+            if i_batch % print_freq == 0:
+                print('Validation: [{0}/{1}]\t'
+                      'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                      'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(i_batch, len(val_loader),
+                                                                      batch_time=batch_time,
+                                                                      loss=losses))
+
+    return accs.avg, losses.avg
 
 
 def main():
@@ -99,6 +100,8 @@ def main():
     # Create SegNet model
     label_nbr = 3
     model = SegNet(label_nbr)
+    # Use appropriate device
+    model = model.to(device)
     model.load_weights("vgg16-00b39a1b.pth")  # load segnet weights
     model.eval()
     print(model)
@@ -106,6 +109,7 @@ def main():
     # define the optimizer
     optimizer = optim.LBFGS(model.parameters(), lr=lr)
 
+    best_loss = 100000
     epochs_since_improvement = 0
 
     # Epochs
@@ -117,11 +121,24 @@ def main():
             adjust_learning_rate(optimizer, 0.8)
 
         # One epoch's training
-        train_loss = train(epoch, train_loader, model, optimizer)
-        print("train_loss " + str(train_loss))
+        train(epoch, train_loader, model, optimizer)
 
-        # validation / test
-        valid(val_loader, model)
+        # One epoch's validation
+        val_loss = valid(val_loader, model)
+        print('\n * LOSS - {loss:.3f}\n'.format(loss=val_loss))
+
+        # Check if there was an improvement
+        is_best = val_loss < best_loss
+        best_loss = min(best_loss, val_loss)
+
+        if not is_best:
+            epochs_since_improvement += 1
+            print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
+        else:
+            epochs_since_improvement = 0
+
+        # Save checkpoint
+        save_checkpoint(epoch, model, optimizer, val_loss, is_best)
 
 
 if __name__ == '__main__':

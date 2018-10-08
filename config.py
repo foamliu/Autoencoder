@@ -10,3 +10,4 @@ patience = 50
 start_epoch = 0
 epochs = 120
 print_freq = 100
+save_folder = 'models'
