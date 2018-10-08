@@ -15,8 +15,8 @@ def load_data():
 
     x_train = np.empty((num_train, 320, 320, 3), dtype=np.float32)
     y_train = np.empty((num_train, 320, 320, 3), dtype=np.float32)
-    x_valid = np.empty((num_valid, 320, 320, 4), dtype=np.float32)
-    y_valid = np.empty((num_valid, 320, 320, 1), dtype=np.float32)
+    x_valid = np.empty((num_valid, 320, 320, 3), dtype=np.float32)
+    y_valid = np.empty((num_valid, 320, 320, 3), dtype=np.float32)
 
     i_train = i_valid = 0
     for root, dirs, files in tqdm(os.walk("data", topdown=False)):
