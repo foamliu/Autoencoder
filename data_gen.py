@@ -29,7 +29,7 @@ def load_data(split):
         rgb_img = cv.cvtColor(bgr_img, cv.COLOR_BGR2RGB)
         rgb_img = np.transpose(rgb_img, (2, 0, 1))
         print('rgb_img.shape: ' + str(rgb_img.shape))
-        assert rgb_img.shape == (3, 224, 224)
+        assert rgb_img.shape == (3, 320, 320)
         assert np.max(rgb_img) <= 255
 
         x[i, :, :, :] = rgb_img / 255.

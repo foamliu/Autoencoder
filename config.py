@@ -3,7 +3,7 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 input_nbr = 3
-imsize = 224
+imsize = 320
 batch_size = 16
 lr = 0.001
 patience = 50
