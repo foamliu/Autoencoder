@@ -7,7 +7,7 @@ import tarfile
 import cv2 as cv
 import numpy as np
 import scipy.io
-from console_progressbar import ProgressBar
+from tqdm import tqdm
 
 
 def ensure_folder(folder):
@@ -16,7 +16,7 @@ def ensure_folder(folder):
 
 
 def save_train_data(fnames, bboxes):
-    src_folder = 'cars_train'
+    src_folder = 'data/cars_train'
     num_samples = len(fnames)
 
     train_split = 0.8
@@ -24,9 +24,7 @@ def save_train_data(fnames, bboxes):
     train_indexes = random.sample(range(num_samples), num_train)
     print('train_indexes: '.format(str(train_indexes)))
 
-    pb = ProgressBar(total=100, prefix='Save train data', suffix='', decimals=3, length=50, fill='=')
-
-    for i in range(num_samples):
+    for i in tqdm(range(num_samples)):
         fname = fnames[i]
         (x1, y1, x2, y2) = bboxes[i]
         src_path = os.path.join(src_folder, fname)
@@ -39,7 +37,6 @@ def save_train_data(fnames, bboxes):
         x2 = min(x2 + margin, width)
         y2 = min(y2 + margin, height)
         # print(fname)
-        pb.print_progress_bar((i + 1) * 100 / num_samples)
 
         if i in train_indexes:
             dst_folder = 'data/train'
@@ -53,13 +50,11 @@ def save_train_data(fnames, bboxes):
 
 
 def save_test_data(fnames, bboxes):
-    src_folder = 'cars_test'
+    src_folder = 'data/cars_test'
     dst_folder = 'data/test'
     num_samples = len(fnames)
 
-    pb = ProgressBar(total=100, prefix='Save test data', suffix='', decimals=3, length=50, fill='=')
-
-    for i in range(num_samples):
+    for i in tqdm(range(num_samples)):
         fname = fnames[i]
         (x1, y1, x2, y2) = bboxes[i]
         src_path = os.path.join(src_folder, fname)
@@ -72,7 +67,7 @@ def save_test_data(fnames, bboxes):
         x2 = min(x2 + margin, width)
         y2 = min(y2 + margin, height)
         # print(fname)
-        pb.print_progress_bar((i + 1) * 100 / num_samples)
+
         dst_path = os.path.join(dst_folder, fname)
         crop_image = src_image[y1:y2, x1:x2]
         dst_img = cv.resize(src=crop_image, dsize=(img_height, img_width))
@@ -82,7 +77,7 @@ def save_test_data(fnames, bboxes):
 
 def process_data(usage):
     print("Processing {} data...".format(usage))
-    cars_annos = scipy.io.loadmat('devkit/cars_{}_annos'.format(usage))
+    cars_annos = scipy.io.loadmat('data/devkit/cars_{}_annos'.format(usage))
     annotations = cars_annos['annotations']
     annotations = np.transpose(annotations)
 
@@ -112,15 +107,15 @@ if __name__ == '__main__':
     # parameters
     img_width, img_height = 320, 320
 
-    print('Extracting cars_train.tgz...')
+    print('Extracting data/cars_train.tgz...')
     # if not os.path.exists('data/cars_train'):
     with tarfile.open('data/cars_train.tgz', "r:gz") as tar:
         tar.extractall('data')
-    print('Extracting cars_test.tgz...')
+    print('Extracting data/cars_test.tgz...')
     # if not os.path.exists('data/cars_test'):
     with tarfile.open('data/cars_test.tgz', "r:gz") as tar:
         tar.extractall('data')
-    print('Extracting car_devkit.tgz...')
+    print('Extracting data/car_devkit.tgz...')
     # if not os.path.exists('data/devkit'):
     with tarfile.open('data/car_devkit.tgz', "r:gz") as tar:
         tar.extractall('data')
