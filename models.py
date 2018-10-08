@@ -1,4 +1,7 @@
 import torch.nn as nn
+from torchsummary import summary
+
+from config import device
 
 
 class conv2DBatchNormRelu(nn.Module):
@@ -98,7 +101,7 @@ class segnetUp3(nn.Module):
 
 
 class SegNet(nn.Module):
-    def __init__(self, n_classes=21, in_channels=3, is_unpooling=True):
+    def __init__(self, n_classes=3, in_channels=3, is_unpooling=True):
         super(SegNet, self).__init__()
 
         self.in_channels = in_channels
@@ -166,3 +169,9 @@ class SegNet(nn.Module):
                 assert l1.bias.size() == l2.bias.size()
                 l2.weight.data = l1.weight.data
                 l2.bias.data = l1.bias.data
+
+
+if __name__ == '__main__':
+    model = SegNet().to(device)
+
+    summary(model, (3, 224, 224))

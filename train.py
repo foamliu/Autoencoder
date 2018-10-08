@@ -102,8 +102,6 @@ def main():
     model = SegNet(label_nbr)
     # Use appropriate device
     model = model.to(device)
-    model.load_weights("vgg16-00b39a1b.pth")  # load segnet weights
-    model.eval()
     print(model)
 
     # define the optimizer
