@@ -1,6 +1,12 @@
+import torch
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 input_nbr = 3
 imsize = 224
 batch_size = 16
-epochs = 1000
 lr = 0.001
 patience = 50
+start_epoch = 0
+epochs = 120
+print_freq = 100

@@ -2,100 +2,70 @@
 ## This document created by Alexandre Boulch, ONERA, France is
 ## distributed under GPL license
 ###############################
+import time
 
 import numpy as np
-import torch
-import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
+from torch.utils.data import DataLoader
 from tqdm import *
 
 from config import *
-from segnet import SegNet
-
-# cuda
-USE_CUDA = torch.cuda.is_available()
-
-# Create SegNet model
-label_nbr = 45
-model = SegNet(label_nbr)
-model.load_weights("vgg16-00b39a1b.pth")  # load segnet weights
-if USE_CUDA:  # convert to cuda if needed
-    model.cuda()
-else:
-    model.float()
-model.eval()
-print(model)
-
-# define the optimizer
-optimizer = optim.LBFGS(model.parameters(), lr=lr)
+from data_gen import VaeDataset
+from models import SegNet
+from utils import *
 
 
-def train(epoch):
+def train(epoch, train_loader, model, optimizer):
+    # Ensure dropout layers are in train mode
     model.train()
 
-    # update learning rate
-    lr = lr * (0.1 ** (epoch // 30))
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
+    # Loss function
+    # criterion = nn.MSELoss().to(device)
 
-    # define a weighted loss (0 weight for 0 label)
-    weights_list = [0] + [1 for i in range(17)]
-    weights = np.asarray(weights_list)
-    weigthtorch = torch.Tensor(weights_list)
-    if (USE_CUDA):
-        loss = nn.CrossEntropyLoss(weight=weigthtorch).cuda()
-    else:
-        loss = nn.CrossEntropyLoss(weight=weigthtorch)
+    batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
+    losses = ExpoAverageMeter()  # loss (per word decoded)
+    accs = ExpoAverageMeter()  # accuracy
 
-    total_loss = 0
+    start = time.time()
 
-    # iteration over the batches
-    batches = []
-    for batch_idx, batch_files in enumerate(tqdm(batches)):
-
-        # containers
-        batch = np.zeros((batch_size, input_nbr, imsize, imsize), dtype=float)
-        batch_labels = np.zeros((batch_size, imsize, imsize), dtype=int)
-
-        # fill the batch
-        # ...
-
-        batch_th = Variable(torch.Tensor(batch))
-        target_th = Variable(torch.LongTensor(batch_labels))
-
-        if USE_CUDA:
-            batch_th = batch_th.cuda()
-            target_th = target_th.cuda()
-
-        # initilize gradients
+    # Batches
+    for i_batch, (x, y) in enumerate(train_loader):
+        # Zero gradients
         optimizer.zero_grad()
 
-        # predictions
-        output = model(batch_th)
+        # Set device options
+        x = x.to(device)
+        y = y.to(device)
 
-        # Loss
-        output = output.view(output.size(0), output.size(1), -1)
-        output = torch.transpose(output, 1, 2).contiguous()
-        output = output.view(-1, output.size(2))
-        target = target.view(-1)
+        y_hat = model(x)
 
-        l_ = loss(output.cuda(), target)
-        total_loss += l_.cpu().data.numpy()
-        l_.cuda()
-        l_.backward()
+        loss = torch.sqrt((y_hat - y).pow(2).mean())
+        loss.backward()
+
         optimizer.step()
 
-    return total_loss / len(files)
+        # Keep track of metrics
+        losses.update(loss.item())
+        batch_time.update(time.time() - start)
+
+        start = time.time()
+
+        # Print status
+        if i_batch % print_freq == 0:
+            print('Epoch: [{0}][{1}/{2}]\t'
+                  'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(epoch, i_batch, len(train_loader),
+                                                                  batch_time=batch_time,
+                                                                  loss=losses))
 
 
-def test(epoch):
+def valid(model):
     model.eval()
 
     # iteration over the batches
     batches = []
     for batch_idx, batch_files in enumerate(tqdm(batches)):
-
         # containers
         bs = len(batch_files)
         batch = np.zeros((bs, input_nbr, imsize, imsize), dtype=float)
@@ -106,15 +76,14 @@ def test(epoch):
 
         data_s2 = Variable(torch.Tensor(batch))
         target = Variable(torch.LongTensor(batch_labels))
-        if USE_CUDA:
-            data_s2, target = data_s2.cuda(), target.cuda()
+
+        data_s2, target = data_s2.to(device), target.to(device)
 
         batch_th = Variable(torch.Tensor(batch))
         target_th = Variable(torch.LongTensor(batch_labels))
 
-        if USE_CUDA:
-            batch_th = batch_th.cuda()
-            target_th = target_th.cuda()
+        batch_th = batch_th.to(device)
+        target_th = target_th.to(device)
 
         # predictions
         output = model(batch_th)
@@ -122,12 +91,38 @@ def test(epoch):
         # ...
 
 
-for epoch in range(1, epochs + 1):
-    print(epoch)
+def main():
+    train_loader = DataLoader(dataset=VaeDataset('train'), batch_size=batch_size, shuffle=True,
+                              pin_memory=True, drop_last=True)
+    val_loader = DataLoader(dataset=VaeDataset('valid'), batch_size=batch_size, shuffle=False,
+                            pin_memory=True, drop_last=True)
+    # Create SegNet model
+    label_nbr = 3
+    model = SegNet(label_nbr)
+    model.load_weights("vgg16-00b39a1b.pth")  # load segnet weights
+    model.eval()
+    print(model)
 
-    # training
-    train_loss = train(epoch)
-    print("train_loss " + str(train_loss))
+    # define the optimizer
+    optimizer = optim.LBFGS(model.parameters(), lr=lr)
 
-    # validation / test
-    test(epoch)
+    epochs_since_improvement = 0
+
+    # Epochs
+    for epoch in range(start_epoch, epochs):
+        # Decay learning rate if there is no improvement for 8 consecutive epochs, and terminate training after 20
+        if epochs_since_improvement == 20:
+            break
+        if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
+            adjust_learning_rate(optimizer, 0.8)
+
+        # One epoch's training
+        train_loss = train(epoch, train_loader, model, optimizer)
+        print("train_loss " + str(train_loss))
+
+        # validation / test
+        valid(val_loader, model)
+
+
+if __name__ == '__main__':
+    main()
