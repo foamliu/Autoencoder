@@ -19,7 +19,7 @@ We use the Cars Dataset, which contains 16,185 images of 196 classes of cars. Th
 You can get it from [Cars Dataset](https://ai.stanford.edu/~jkrause/cars/car_dataset.html):
 
 ```bash
-$ cd Conv-Autoencoder
+$ cd Autoencoder/data
 $ wget http://imagenet.stanford.edu/internal/car196/cars_train.tgz
 $ wget http://imagenet.stanford.edu/internal/car196/cars_test.tgz
 $ wget --no-check-certificate https://ai.stanford.edu/~jkrause/cars/car_devkit.tgz
