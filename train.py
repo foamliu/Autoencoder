@@ -71,7 +71,6 @@ def valid(val_loader, model):
 
     batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)
-    accs = ExpoAverageMeter()  # accuracy
 
     start = time.time()
 
@@ -100,7 +99,7 @@ def valid(val_loader, model):
                                                                       batch_time=batch_time,
                                                                       loss=losses))
 
-    return accs.avg, losses.avg
+    return losses.avg
 
 
 def main():
