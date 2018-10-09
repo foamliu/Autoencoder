@@ -1,6 +1,7 @@
 import time
 
 import torch.optim as optim
+from torch import nn
 from torch.utils.data import DataLoader
 
 from data_gen import VaeDataset
@@ -106,6 +107,10 @@ def main():
     # Create SegNet model
     label_nbr = 3
     model = SegNet(label_nbr)
+    if torch.cuda.device_count() > 1:
+        print("Let's use", torch.cuda.device_count(), "GPUs!")
+        # dim = 0 [40, xxx] -> [10, ...], [10, ...], [10, ...], [10, ...] on 4 GPUs
+        model = nn.DataParallel(model)
     # Use appropriate device
     model = model.to(device)
     # print(model)
