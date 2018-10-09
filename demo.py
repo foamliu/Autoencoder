@@ -32,7 +32,7 @@ def main():
         # Read images
         img = imread(path)
         img = imresize(img, (imsize, imsize))
-        imsave('images/image_{}.jpg'.format(i), img)
+        imsave('images/{}_image.png'.format(i), img)
 
         img = img.transpose(2, 0, 1)
         assert img.shape == (3, imsize, imsize)
@@ -53,7 +53,7 @@ def main():
         out = np.clip(out, 0, 255)
         out = out.astype(np.uint8)
         out = cv.cvtColor(out, cv.COLOR_RGB2BGR)
-        cv.imwrite('images/out_{}.jpg'.format(i), out)
+        cv.imwrite('images/{}_out.png'.format(i), out)
 
 
 if __name__ == '__main__':
