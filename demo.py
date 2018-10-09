@@ -7,6 +7,7 @@ import torch
 from scipy.misc import imread, imresize, imsave
 
 from config import device, save_folder, imsize
+from utils import ensure_folder
 
 
 def main():
@@ -26,6 +27,7 @@ def main():
 
     imgs = torch.zeros([num_test_samples, 3, imsize, imsize], dtype=torch.float, device=device)
 
+    ensure_folder('images')
     for i, path in enumerate(samples):
         # Read images
         img = imread(path)
