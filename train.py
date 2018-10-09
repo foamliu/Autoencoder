@@ -51,7 +51,7 @@ def train(epoch, train_loader, model, optimizer):
         optimizer.step()
 
         # Keep track of metrics
-        # losses.update(loss.item())
+        losses.update(loss.item())
         batch_time.update(time.time() - start)
 
         start = time.time()
