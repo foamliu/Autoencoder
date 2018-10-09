@@ -9,6 +9,8 @@ import numpy as np
 import scipy.io
 from tqdm import tqdm
 
+from config import imsize
+
 
 def ensure_folder(folder):
     if not os.path.exists(folder):
@@ -105,7 +107,7 @@ def process_data(usage):
 
 if __name__ == '__main__':
     # parameters
-    img_width, img_height = 320, 320
+    img_width, img_height = imsize, imsize
 
     print('Extracting data/cars_train.tgz...')
     # if not os.path.exists('data/cars_train'):

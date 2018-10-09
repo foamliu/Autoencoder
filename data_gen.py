@@ -4,6 +4,8 @@ import cv2 as cv
 import numpy as np
 from torch.utils.data import Dataset
 
+from config import imsize
+
 
 def load_data(split):
     # (num_samples, 320, 320, 4)
@@ -19,8 +21,8 @@ def load_data(split):
         num_samples = num_valid
         folder = 'data/valid'
 
-    x = np.empty((num_samples, 3, 320, 320), dtype=np.float32)
-    y = np.empty((num_samples, 3, 320, 320), dtype=np.float32)
+    x = np.empty((num_samples, 3, imsize, imsize), dtype=np.float32)
+    y = np.empty((num_samples, 3, imsize, imsize), dtype=np.float32)
 
     files = [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith('.jpg')]
 
@@ -29,7 +31,7 @@ def load_data(split):
         rgb_img = cv.cvtColor(bgr_img, cv.COLOR_BGR2RGB)
         rgb_img = np.transpose(rgb_img, (2, 0, 1))
         # print('rgb_img.shape: ' + str(rgb_img.shape))
-        assert rgb_img.shape == (3, 320, 320)
+        assert rgb_img.shape == (3, imsize, imsize)
         assert np.max(rgb_img) <= 255
 
         x[i, :, :, :] = rgb_img / 255.

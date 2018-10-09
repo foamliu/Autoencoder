@@ -1,7 +1,7 @@
 import torch.nn as nn
 from torchsummary import summary
 
-from config import device
+from config import device, imsize
 
 
 class conv2DBatchNormRelu(nn.Module):
@@ -174,4 +174,4 @@ class SegNet(nn.Module):
 if __name__ == '__main__':
     model = SegNet().to(device)
 
-    summary(model, (3, 224, 224))
+    summary(model, (3, imsize, imsize))
