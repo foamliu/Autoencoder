@@ -17,7 +17,6 @@ def train(epoch, train_loader, model, optimizer):
 
     batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)
-    accs = ExpoAverageMeter()  # accuracy
 
     start = time.time()
 
@@ -35,7 +34,14 @@ def train(epoch, train_loader, model, optimizer):
         loss = torch.sqrt((y_hat - y).pow(2).mean())
         loss.backward()
 
-        optimizer.step()
+        def closure():
+            optimizer.zero_grad()
+            y_hat = model(x)
+            loss = torch.sqrt((y_hat - y).pow(2).mean())
+            loss.backward()
+            return loss
+
+        optimizer.step(closure)
 
         # Keep track of metrics
         losses.update(loss.item())
@@ -102,7 +108,7 @@ def main():
     model = SegNet(label_nbr)
     # Use appropriate device
     model = model.to(device)
-    print(model)
+    # print(model)
 
     # define the optimizer
     optimizer = optim.LBFGS(model.parameters(), lr=lr)
