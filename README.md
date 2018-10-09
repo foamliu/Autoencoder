@@ -53,7 +53,6 @@ If you want to visualize during training, run in your terminal:
 $ tensorboard --logdir path_to_current_dir/logs
 ```
 
-![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/nadam.png)
 
 ### Demo
 Download pre-trained [model](https://github.com/foamliu/Conv-Autoencoder/releases/download/v1.0/model.97-0.0201.hdf5) weights into "models" folder then run:
@@ -66,13 +65,13 @@ Then check results in images folder, something like:
 
 Input | GT | Output |
 |---|---|---|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/0_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/0_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/1_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/1_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/2_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/2_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/3_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/3_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/4_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/4_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/5_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/5_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/6_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/6_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/7_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/7_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/8_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/8_out.png)|
-|![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/9_image.png) | ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/9_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/0_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/0_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/1_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/1_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/2_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/2_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/3_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/3_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/4_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/4_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/5_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/5_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/6_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/6_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/7_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/7_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/8_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/8_out.png)|
+|![image](https://github.com/foamliu/Autoencoder/raw/master/images/9_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/9_out.png)|
