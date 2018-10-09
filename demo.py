@@ -19,8 +19,7 @@ def main():
     model.eval()
 
     test_path = 'data/test/'
-    test_images = [f for f in os.listdir(test_path) if
-                   os.path.isfile(os.path.join(test_path, f)) and f.endswith('.jpg')]
+    test_images = [os.path.join(test_path, f) for f in os.listdir(test_path) if f.endswith('.jpg')]
 
     num_test_samples = 10
     samples = random.sample(test_images, num_test_samples)
