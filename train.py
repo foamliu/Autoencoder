@@ -29,8 +29,11 @@ def train(epoch, train_loader, model, optimizer):
         # Set device options
         x = x.to(device)
         y = y.to(device)
+        print('x.size(): ' + str(x.size()))
+        print('y.size(): ' + str(y.size()))
 
         y_hat = model(x)
+        print('y_hat.size(): ' + str(y_hat.size()))
 
         loss = torch.sqrt((y_hat - y).pow(2).mean())
         loss.backward()
@@ -42,7 +45,8 @@ def train(epoch, train_loader, model, optimizer):
             loss.backward()
             return loss
 
-        optimizer.step(closure)
+        # optimizer.step(closure)
+        optimizer.step()
 
         # Keep track of metrics
         losses.update(loss.item())
@@ -116,7 +120,8 @@ def main():
     # print(model)
 
     # define the optimizer
-    optimizer = optim.LBFGS(model.parameters(), lr=lr)
+    # optimizer = optim.LBFGS(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
 
     best_loss = 100000
     epochs_since_improvement = 0
