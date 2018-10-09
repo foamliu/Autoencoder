@@ -63,8 +63,8 @@ $ python demo.py
 
 Then check results in images folder, something like:
 
-Input | GT | Output |
-|---|---|---|
+Input | Output |
+|---|---|
 |![image](https://github.com/foamliu/Autoencoder/raw/master/images/0_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/0_out.png)|
 |![image](https://github.com/foamliu/Autoencoder/raw/master/images/1_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/1_out.png)|
 |![image](https://github.com/foamliu/Autoencoder/raw/master/images/2_image.png) | ![image](https://github.com/foamliu/Autoencoder/raw/master/images/2_out.png)|
