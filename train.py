@@ -31,24 +31,24 @@ def train(epoch, train_loader, model, optimizer):
         # print('y.size(): ' + str(y.size())) # [32, 3, 224, 224]
 
         # Zero gradients
-        # optimizer.zero_grad()
+        optimizer.zero_grad()
 
-        # y_hat = model(x)
-        # # print('y_hat.size(): ' + str(y_hat.size())) # [32, 3, 224, 224]
-        #
-        # loss = torch.sqrt((y_hat - y).pow(2).mean())
-        # loss.backward()
+        y_hat = model(x)
+        # print('y_hat.size(): ' + str(y_hat.size())) # [32, 3, 224, 224]
 
-        def closure():
-            optimizer.zero_grad()
-            y_hat = model(x)
-            loss = torch.sqrt((y_hat - y).pow(2).mean())
-            loss.backward()
-            losses.update(loss.item())
-            return loss
+        loss = torch.sqrt((y_hat - y).pow(2).mean())
+        loss.backward()
 
-        optimizer.step(closure)
-        # optimizer.step()
+        # def closure():
+        #     optimizer.zero_grad()
+        #     y_hat = model(x)
+        #     loss = torch.sqrt((y_hat - y).pow(2).mean())
+        #     loss.backward()
+        #     losses.update(loss.item())
+        #     return loss
+
+        # optimizer.step(closure)
+        optimizer.step()
 
         # Keep track of metrics
         # losses.update(loss.item())
@@ -121,8 +121,8 @@ def main():
     # print(model)
 
     # define the optimizer
-    optimizer = optim.LBFGS(model.parameters(), lr=0.8)
-    # optimizer = optim.Adam(model.parameters(), lr=lr)
+    # optimizer = optim.LBFGS(model.parameters(), lr=0.8)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
 
     best_loss = 100000
     epochs_since_improvement = 0
