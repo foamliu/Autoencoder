@@ -29,11 +29,11 @@ def train(epoch, train_loader, model, optimizer):
         # Set device options
         x = x.to(device)
         y = y.to(device)
-        print('x.size(): ' + str(x.size()))
-        print('y.size(): ' + str(y.size()))
+        # print('x.size(): ' + str(x.size())) # [32, 3, 224, 224]
+        # print('y.size(): ' + str(y.size())) # [32, 3, 224, 224]
 
         y_hat = model(x)
-        print('y_hat.size(): ' + str(y_hat.size()))
+        # print('y_hat.size(): ' + str(y_hat.size())) # [32, 3, 224, 224]
 
         loss = torch.sqrt((y_hat - y).pow(2).mean())
         loss.backward()
