@@ -27,30 +27,18 @@ $ wget --no-check-certificate https://ai.stanford.edu/~jkrause/cars/car_devkit.t
 
 ![image](https://github.com/foamliu/Conv-Autoencoder/raw/master/images/segnet.jpg)
 
-
-## ImageNet Pretrained Models
-
-Download [VGG16](https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels.h5) into models folder.
-
-
 ## Usage
 
 ### Data Pre-processing
 Extract 8,144 training images, and split them by 80:20 rule (6,515 for training, 1,629 for validation):
 ```bash
-$ python pre-process.py
+$ python pre_process.py
 ```
 
 ### Train
 ```bash
 $ python train.py
 ```
-
-If you want to visualize during training, run in your terminal:
-```bash
-$ tensorboard --logdir path_to_current_dir/logs
-```
-
 
 ### Demo
 Download pre-trained [model](https://github.com/foamliu/Conv-Autoencoder/releases/download/v1.0/model.97-0.0201.hdf5) weights into "models" folder then run:
