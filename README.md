@@ -41,7 +41,7 @@ $ python train.py
 ```
 
 ### Demo
-Download pre-trained [model](https://github.com/foamliu/Conv-Autoencoder/releases/download/v1.0/model.97-0.0201.hdf5) weights into "models" folder then run:
+Download pre-trained [model](https://github.com/foamliu/Autoencoder/releases/download/v1.0/BEST_checkpoint.tar) weights into "models" folder then run:
 
 ```bash
 $ python demo.py
