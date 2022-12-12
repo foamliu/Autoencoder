@@ -112,15 +112,72 @@ if __name__ == '__main__':
     print('Extracting data/cars_train.tgz...')
     # if not os.path.exists('data/cars_train'):
     with tarfile.open('data/cars_train.tgz', "r:gz") as tar:
-        tar.extractall('data')
+        def is_within_directory(directory, target):
+            
+            abs_directory = os.path.abspath(directory)
+            abs_target = os.path.abspath(target)
+        
+            prefix = os.path.commonprefix([abs_directory, abs_target])
+            
+            return prefix == abs_directory
+        
+        def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+        
+            for member in tar.getmembers():
+                member_path = os.path.join(path, member.name)
+                if not is_within_directory(path, member_path):
+                    raise Exception("Attempted Path Traversal in Tar File")
+        
+            tar.extractall(path, members, numeric_owner=numeric_owner) 
+            
+        
+        safe_extract(tar, "data")
     print('Extracting data/cars_test.tgz...')
     # if not os.path.exists('data/cars_test'):
     with tarfile.open('data/cars_test.tgz', "r:gz") as tar:
-        tar.extractall('data')
+        def is_within_directory(directory, target):
+            
+            abs_directory = os.path.abspath(directory)
+            abs_target = os.path.abspath(target)
+        
+            prefix = os.path.commonprefix([abs_directory, abs_target])
+            
+            return prefix == abs_directory
+        
+        def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+        
+            for member in tar.getmembers():
+                member_path = os.path.join(path, member.name)
+                if not is_within_directory(path, member_path):
+                    raise Exception("Attempted Path Traversal in Tar File")
+        
+            tar.extractall(path, members, numeric_owner=numeric_owner) 
+            
+        
+        safe_extract(tar, "data")
     print('Extracting data/car_devkit.tgz...')
     # if not os.path.exists('data/devkit'):
     with tarfile.open('data/car_devkit.tgz', "r:gz") as tar:
-        tar.extractall('data')
+        def is_within_directory(directory, target):
+            
+            abs_directory = os.path.abspath(directory)
+            abs_target = os.path.abspath(target)
+        
+            prefix = os.path.commonprefix([abs_directory, abs_target])
+            
+            return prefix == abs_directory
+        
+        def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+        
+            for member in tar.getmembers():
+                member_path = os.path.join(path, member.name)
+                if not is_within_directory(path, member_path):
+                    raise Exception("Attempted Path Traversal in Tar File")
+        
+            tar.extractall(path, members, numeric_owner=numeric_owner) 
+            
+        
+        safe_extract(tar, "data")
 
     cars_meta = scipy.io.loadmat('data/devkit/cars_meta')
     class_names = cars_meta['class_names']  # shape=(1, 196)
